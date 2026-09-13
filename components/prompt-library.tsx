@@ -2,16 +2,16 @@
 
 import { useState } from 'react'
 import Image from 'next/image'
-import { ArrowDown, ArrowRight, ArrowUpRight, Bookmark, Code2, Flame, ImageIcon, Layers3, Megaphone, Search, Sparkles, Trash2 } from 'lucide-react'
+import { ArrowDown, ArrowRight, ArrowUpRight, Bookmark, Code2, Flame, ImageIcon, Layers3, Megaphone, Search, Sparkles, Trash2, Zap, Terminal } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet'
 import { Input } from '@/components/ui/input'
 import { ToggleGroup, ToggleGroupItem } from '@/components/ui/toggle-group'
-import { categories, recipes, type PromptResult, type Recipe } from '@/lib/prompt-engine'
+import { categories, recipes, type PromptResult, type Recipe, type Category } from '@/lib/prompt-engine'
 
-export const categoryIcons = { visual: ImageIcon, code: Code2, content: Megaphone }
+export const categoryIcons: Record<Category, typeof ImageIcon> = { visual: ImageIcon, flux: Flame, code: Code2, cursor: Terminal, content: Megaphone }
 function RecipeArt({ art }: { art: string }) {
   if (art === 'cyberpunk') return <Image src="/images/cyberpunk.png" alt="Neon-lit city at night with a lone figure in the rain" fill sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 300px" className="object-cover" />
   if (art === 'product') return <Image src="/images/product.png" alt="Botanical serum bottle on travertine in warm morning light" fill sizes="(max-width: 640px) 50vw, 300px" className="object-cover" />
@@ -21,7 +21,7 @@ function RecipeArt({ art }: { art: string }) {
 }
 function RecipeCard({ recipe, onSelect }: { recipe: Recipe; onSelect: (recipe: Recipe) => void }) {
   const Icon = categoryIcons[recipe.category]
-  return <button className="recipe-card group" onClick={() => onSelect(recipe)}><div className={`recipe-art recipe-art-${recipe.art}`}><RecipeArt art={recipe.art} /><Badge variant="secondary"><Icon data-icon="inline-start" />{recipe.category === 'code' ? 'Development' : recipe.category === 'visual' ? 'Visual art' : 'Marketing'}</Badge><span className="recipe-hover"><ArrowUpRight className="size-4" /></span></div><div className="recipe-info"><h3>{recipe.title}</h3><p>{recipe.description}</p><div><span>{recipe.tag}</span><ArrowUpRight className="size-3.5" /></div></div></button>
+  return <button className="recipe-card group" onClick={() => onSelect(recipe)}><div className={`recipe-art recipe-art-${recipe.art}`}><RecipeArt art={recipe.art} /><Badge variant="secondary"><Icon data-icon="inline-start" />{recipe.category === 'code' ? 'Development' : recipe.category === 'visual' ? 'Visual art' : recipe.category === 'flux' ? 'Flux' : recipe.category === 'cursor' ? 'Cursor' : 'Marketing'}</Badge><span className="recipe-hover"><ArrowUpRight className="size-4" /></span></div><div className="recipe-info"><h3>{recipe.title}</h3><p>{recipe.description}</p><div><span>{recipe.tag}</span><ArrowUpRight className="size-3.5" /></div></div></button>
 }
 export function TrendingRecipes({ onSelect, onBrowse }: { onSelect: (recipe: Recipe) => void; onBrowse: () => void }) {
   return <section className="discovery" aria-labelledby="recipes-title"><div className="discovery-heading"><div><h2 id="recipes-title"><Flame className="size-4" />A little inspiration goes a long way.</h2><p>Skip the blank canvas. Start with a recipe, make it yours.</p></div><Button variant="ghost" size="sm" onClick={onBrowse}>Explore all templates<ArrowRight data-icon="inline-end" /></Button></div><div className="recipe-grid">{recipes.slice(0, 4).map(recipe => <RecipeCard key={recipe.id} recipe={recipe} onSelect={onSelect} />)}</div></section>

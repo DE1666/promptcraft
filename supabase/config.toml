@@ -1,0 +1,5 @@
+[functions.check-usage]
+verify_jwt = true
+
+[functions.increment-usage]
+verify_jwt = true
